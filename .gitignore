@@ -1,4 +1,7 @@
-# Personal data (user fills these)
+# Personal data (user fills these) -- NEVER commit these
+cv.md
+article-digest.md
+interview-prep/story-bank.md
 data/applications.md
 data/pipeline.md
 data/scan-history.tsv
@@ -26,6 +29,10 @@ modes/_profile.md
 .resolved-prompt-*
 node_modules/
 
+# Compiled dashboard binaries (built locally, not committed)
+dashboard/career-dashboard
+dashboard/career-dashboard.exe
+
 # OS
 .DS_Store
 *.mov
@@ -34,4 +41,3 @@ node_modules/
 # Claude Code local
 .claude/settings.local.json
 .claude/memory/
-career-dashboard

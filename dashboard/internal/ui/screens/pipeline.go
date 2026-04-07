@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -41,6 +42,9 @@ type PipelineUpdateStatusMsg struct {
 	App           model.CareerApplication
 	NewStatus     string
 }
+
+// PipelineRequestReloadMsg asks main to force-reload applications.md.
+type PipelineRequestReloadMsg struct{}
 
 type reportSummary struct {
 	archetype string
@@ -102,6 +106,7 @@ type PipelineModel struct {
 	theme         theme.Theme
 	careerOpsPath string
 	reportCache   map[string]reportSummary
+	lastReloaded  time.Time
 	// Status picker sub-state
 	statusPicker bool
 	statusCursor int
@@ -157,6 +162,11 @@ func (m *PipelineModel) EnrichReport(reportPath, archetype, tldr, remote, comp s
 		remote:    remote,
 		comp:      comp,
 	}
+}
+
+// SetLastReloaded records the last time data was refreshed from disk.
+func (m *PipelineModel) SetLastReloaded(t time.Time) {
+	m.lastReloaded = t
 }
 
 // CurrentApp returns the currently selected application, if any.
@@ -244,6 +254,9 @@ func (m PipelineModel) handleKey(msg tea.KeyMsg) (PipelineModel, tea.Cmd) {
 		} else {
 			m.viewMode = "grouped"
 		}
+
+	case "r":
+		return m, func() tea.Msg { return PipelineRequestReloadMsg{} }
 
 	case "enter":
 		if app, ok := m.CurrentApp(); ok && app.ReportPath != "" {
@@ -400,7 +413,7 @@ func (m *PipelineModel) applyFilterAndSort() {
 
 // adjustScroll updates scrollOffset so the cursor stays visible.
 func (m *PipelineModel) adjustScroll() {
-	availHeight := m.height - 12 // header + tabs(2) + metrics + sortbar + footer + preview
+	availHeight := m.height - 14 // header + tabs(2) + funnel + metrics + sortbar + footer + preview
 	if availHeight < 5 {
 		availHeight = 5
 	}
@@ -445,6 +458,7 @@ func (m PipelineModel) cursorLineEstimate() int {
 func (m PipelineModel) View() string {
 	header := m.renderHeader()
 	tabs := m.renderTabs()
+	funnel := m.renderFunnel()
 	metricsBar := m.renderMetrics()
 	sortBar := m.renderSortBar()
 	body := m.renderBody()
@@ -459,7 +473,7 @@ func (m PipelineModel) View() string {
 
 	// Calculate available height for body
 	previewLines := strings.Count(preview, "\n") + 1
-	availHeight := m.height - 7 - previewLines // header + tabs(2) + metrics + sortbar + help + preview
+	availHeight := m.height - 9 - previewLines // header + tabs(2) + funnel + metrics + sortbar + help + preview
 	if availHeight < 3 {
 		availHeight = 3
 	}
@@ -476,6 +490,7 @@ func (m PipelineModel) View() string {
 	return lipgloss.JoinVertical(lipgloss.Left,
 		header,
 		tabs,
+		funnel,
 		metricsBar,
 		sortBar,
 		body,
@@ -492,17 +507,37 @@ func (m PipelineModel) renderHeader() string {
 		Width(m.width).
 		Padding(0, 2)
 
-	right := lipgloss.NewStyle().Foreground(m.theme.Subtext)
-	avg := fmt.Sprintf("%.1f", m.metrics.AvgScore)
-	info := right.Render(fmt.Sprintf("%d offers | Avg %s/5", m.metrics.Total, avg))
+	titleStyle := lipgloss.NewStyle().Bold(true).Foreground(m.theme.Blue)
+	liveStyle := lipgloss.NewStyle().Foreground(m.theme.Green).Bold(true)
+	subStyle := lipgloss.NewStyle().Foreground(m.theme.Subtext)
 
-	title := lipgloss.NewStyle().Bold(true).Foreground(m.theme.Blue).Render("CAREER PIPELINE")
-	gap := m.width - lipgloss.Width(title) - lipgloss.Width(info) - 4
+	title := titleStyle.Render("◈ CAREER PIPELINE")
+	liveTag := liveStyle.Render("⟳ live")
+
+	// Last-reload timestamp
+	reloadStr := ""
+	if !m.lastReloaded.IsZero() {
+		reloadStr = subStyle.Render("updated " + m.lastReloaded.Format("15:04:05"))
+	}
+
+	avg := fmt.Sprintf("%.1f", m.metrics.AvgScore)
+	top := fmt.Sprintf("%.1f", m.metrics.TopScore)
+	stats := subStyle.Render(fmt.Sprintf("%d offers  avg %s/5  top %s/5", m.metrics.Total, avg, top))
+
+	// Build right side
+	right := liveTag
+	if reloadStr != "" {
+		right = reloadStr + "  " + liveTag
+	}
+
+	leftW := lipgloss.Width(title) + lipgloss.Width(stats) + 4
+	rightW := lipgloss.Width(right)
+	gap := m.width - leftW - rightW - 4
 	if gap < 1 {
 		gap = 1
 	}
 
-	return style.Render(title + strings.Repeat(" ", gap) + info)
+	return style.Render(title + "  " + stats + strings.Repeat(" ", gap) + right)
 }
 
 func (m PipelineModel) renderTabs() string {
@@ -555,6 +590,55 @@ func (m PipelineModel) countForFilter(filter string) int {
 		}
 	}
 	return count
+}
+
+// renderFunnel draws the application pipeline as a conversion funnel.
+func (m PipelineModel) renderFunnel() string {
+	if m.metrics.Total == 0 {
+		return ""
+	}
+
+	padStyle := lipgloss.NewStyle().Padding(0, 2)
+	labelStyle := lipgloss.NewStyle().Foreground(m.theme.Subtext)
+	barFill := "█"
+	barEmpty := "░"
+
+	total := m.metrics.Total
+	stages := []struct {
+		key   string
+		label string
+		color lipgloss.Color
+	}{
+		{"applied", "Applied", m.theme.Sky},
+		{"interview", "Interview", m.theme.Green},
+		{"offer", "Offer", m.theme.Green},
+	}
+
+	// Build inline funnel: Total → Applied → Interview → Offer
+	maxBarW := 24
+	parts := []string{}
+
+	// Total anchor
+	totalStyle := lipgloss.NewStyle().Foreground(m.theme.Blue).Bold(true)
+	parts = append(parts, totalStyle.Render(fmt.Sprintf("%-3d total", total)))
+
+	for _, stage := range stages {
+		count := m.metrics.ByStatus[stage.key]
+		if total > 0 {
+			filled := int(float64(count) / float64(total) * float64(maxBarW))
+			if filled > maxBarW {
+				filled = maxBarW
+			}
+			bar := strings.Repeat(barFill, filled) + strings.Repeat(barEmpty, maxBarW-filled)
+			barStyled := lipgloss.NewStyle().Foreground(stage.color).Render(bar)
+			countStyled := lipgloss.NewStyle().Foreground(stage.color).Bold(true).Render(fmt.Sprintf("%3d", count))
+			label := labelStyle.Render(fmt.Sprintf("%-9s", stage.label))
+			parts = append(parts, countStyled+" "+barStyled+" "+label)
+		}
+	}
+
+	sep := lipgloss.NewStyle().Foreground(m.theme.Overlay).Render("  →  ")
+	return padStyle.Render(strings.Join(parts, sep))
 }
 
 func (m PipelineModel) renderMetrics() string {
@@ -629,23 +713,49 @@ func (m PipelineModel) renderBody() string {
 	return strings.Join(lines, "\n")
 }
 
+// scoreBar renders a compact 5-cell Unicode block bar for a score out of 5.
+func scoreBar(score float64, filled lipgloss.Color, empty lipgloss.Color) string {
+	const maxCells = 5
+	fullBlocks := int(score)
+	partial := score - float64(fullBlocks)
+
+	result := ""
+	filledStyle := lipgloss.NewStyle().Foreground(filled)
+	emptyStyle := lipgloss.NewStyle().Foreground(empty)
+
+	for i := 0; i < maxCells; i++ {
+		if i < fullBlocks {
+			result += filledStyle.Render("█")
+		} else if i == fullBlocks && partial >= 0.5 {
+			result += filledStyle.Render("▌")
+		} else {
+			result += emptyStyle.Render("░")
+		}
+	}
+	return result
+}
+
 func (m PipelineModel) renderAppLine(app model.CareerApplication, selected bool) string {
 	padStyle := lipgloss.NewStyle().Padding(0, 2)
 
 	// Column widths
-	scoreW := 5   // "4.5  "
+	scoreNumW := 4  // "4.5 "
+	scoreBarW := 5  // 5-cell bar
 	companyW := 20
 	statusW := 12
 	compW := 14
 	// Role gets remaining space
-	roleW := m.width - scoreW - companyW - statusW - compW - 10
+	roleW := m.width - scoreNumW - scoreBarW - companyW - statusW - compW - 14
 	if roleW < 15 {
 		roleW = 15
 	}
 
-	// Score with color
+	// Score number + mini bar
 	scoreStyle := m.scoreStyle(app.Score)
-	score := scoreStyle.Render(fmt.Sprintf("%.1f", app.Score))
+	scoreNum := scoreStyle.Render(fmt.Sprintf("%.1f", app.Score))
+
+	barFilled, barEmpty := m.scoreBarColors(app.Score)
+	bar := scoreBar(app.Score, barFilled, barEmpty)
 
 	// Company (truncate)
 	company := app.Company
@@ -678,8 +788,9 @@ func (m PipelineModel) renderAppLine(app model.CareerApplication, selected bool)
 		compText = compStyle.Render(comp)
 	}
 
-	line := fmt.Sprintf(" %s %s %s %s %s",
-		score,
+	line := fmt.Sprintf(" %s %s %s %s %s %s",
+		scoreNum,
+		bar,
 		companyStyle.Render(company),
 		roleStyle.Render(role),
 		statusText,
@@ -715,7 +826,7 @@ func (m PipelineModel) renderPreview() string {
 	if summary, ok := m.reportCache[app.ReportPath]; ok {
 		if summary.archetype != "" {
 			lines = append(lines, padStyle.Render(
-				labelStyle.Render("Arquetipo: ")+valueStyle.Render(summary.archetype)))
+				labelStyle.Render("Archetype: ")+valueStyle.Render(summary.archetype)))
 		}
 		if summary.tldr != "" {
 			lines = append(lines, padStyle.Render(
@@ -760,15 +871,16 @@ func (m PipelineModel) renderHelp() string {
 				keyStyle.Render("Esc") + descStyle.Render(" cancel"))
 	}
 
-	brand := lipgloss.NewStyle().Foreground(m.theme.Overlay).Render("career-ops by santifer.io")
+	brand := lipgloss.NewStyle().Foreground(m.theme.Overlay).Render("career-ops")
 
 	keys := keyStyle.Render("↑↓") + descStyle.Render(" nav  ") +
 		keyStyle.Render("←→") + descStyle.Render(" tabs  ") +
 		keyStyle.Render("s") + descStyle.Render(" sort  ") +
 		keyStyle.Render("Enter") + descStyle.Render(" report  ") +
-		keyStyle.Render("o") + descStyle.Render(" open URL  ") +
-		keyStyle.Render("c") + descStyle.Render(" change  ") +
+		keyStyle.Render("o") + descStyle.Render(" URL  ") +
+		keyStyle.Render("c") + descStyle.Render(" status  ") +
 		keyStyle.Render("v") + descStyle.Render(" view  ") +
+		keyStyle.Render("r") + descStyle.Render(" reload  ") +
 		keyStyle.Render("Esc") + descStyle.Render(" quit")
 
 	gap := m.width - lipgloss.Width(keys) - lipgloss.Width(brand) - 2
@@ -821,6 +933,19 @@ func (m PipelineModel) scoreStyle(score float64) lipgloss.Style {
 		return lipgloss.NewStyle().Foreground(m.theme.Text)
 	default:
 		return lipgloss.NewStyle().Foreground(m.theme.Red)
+	}
+}
+
+func (m PipelineModel) scoreBarColors(score float64) (lipgloss.Color, lipgloss.Color) {
+	switch {
+	case score >= 4.2:
+		return m.theme.Green, m.theme.Overlay
+	case score >= 3.8:
+		return m.theme.Yellow, m.theme.Overlay
+	case score >= 3.0:
+		return m.theme.Sky, m.theme.Overlay
+	default:
+		return m.theme.Red, m.theme.Overlay
 	}
 }
 
