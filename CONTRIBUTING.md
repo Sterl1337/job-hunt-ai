@@ -1,18 +1,18 @@
-# Contributing to Career-Ops
+# Contributing to job-hunt-ai
 
-Thanks for your interest in contributing! Career-Ops is built with Claude Code, and you can use it for development too.
+Thanks for your interest in contributing! job-hunt-ai is built with Claude Code, and you can use it for development too.
 
 ## Before Submitting a PR
 
-**Please open an issue first to discuss the change you'd like to make.** This helps us align on direction before you invest time coding.
+**Please open an issue first to discuss the change you'd like to make.** This helps align on direction before you invest time coding.
 
-PRs without a corresponding issue may be closed if they don't align with the project's architecture or goals.
+PRs without a corresponding issue may be closed if they don't fit the project's architecture or goals.
 
 ### What makes a good PR
 - Fixes a bug listed in Issues
 - Addresses a feature request that was discussed and approved
 - Includes a clear description of what changed and why
-- Follows the existing code style and project philosophy (simple, minimal, quality over quantity)
+- Follows the existing code style (simple, minimal, quality over quantity)
 
 ## Quick Start
 
@@ -28,10 +28,9 @@ PRs without a corresponding issue may be closed if they don't align with the pro
 
 **Good first contributions:**
 - Add companies to `templates/portals.example.yml`
-- Translate modes to other languages
 - Improve documentation
 - Add example CVs for different roles (in `examples/`)
-- Report bugs via [Issues](https://github.com/santifer/career-ops/issues)
+- Report bugs via [Issues](https://github.com/Sterl1337/job-hunt-ai/issues)
 
 **Bigger contributions:**
 - New evaluation dimensions or scoring logic
@@ -41,10 +40,9 @@ PRs without a corresponding issue may be closed if they don't align with the pro
 
 ## Guidelines
 
-- Keep modes language-agnostic when possible (Claude handles both EN and ES)
-- Scripts should handle missing files gracefully (check `existsSync` before `readFileSync`)
+- Scripts should handle missing files gracefully (`existsSync` before `readFileSync`)
 - Dashboard changes require `go build` — test with real data before submitting
-- Don't commit personal data (cv.md, profile.yml, applications.md, reports/)
+- Don't commit personal data (`cv.md`, `profile.yml`, `applications.md`, `reports/`)
 
 ## Development
 
@@ -54,12 +52,11 @@ node verify-pipeline.mjs     # Health check
 node cv-sync-check.mjs        # Config check
 
 # Dashboard
-cd dashboard && go build -o career-dashboard .
-./career-dashboard --path .
+cd dashboard && go build -o career-dashboard.exe .
+./career-dashboard.exe --path ..
 ```
 
 ## Need Help?
 
-- [Open an issue](https://github.com/santifer/career-ops/issues)
+- [Open an issue](https://github.com/Sterl1337/job-hunt-ai/issues)
 - [Read the architecture docs](docs/ARCHITECTURE.md)
-- Built by [santifer](https://santifer.io)

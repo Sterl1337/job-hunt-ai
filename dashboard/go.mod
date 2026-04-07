@@ -1,4 +1,4 @@
-module github.com/santifer/career-ops/dashboard
+module github.com/Sterl1337/job-hunt-ai/dashboard
 
 go 1.24.2
 

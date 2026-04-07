@@ -1,5 +1,5 @@
 {
-  "name": "career-ops",
+  "name": "job-hunt-ai",
   "version": "1.0.0",
   "description": "AI-powered job search pipeline built on Claude Code",
   "scripts": {
@@ -13,12 +13,12 @@
     "update": "node update-system.mjs apply",
     "rollback": "node update-system.mjs rollback"
   },
-  "keywords": ["ai", "job-search", "claude-code", "career", "automation"],
-  "author": "Santiago Fernández de Valderrama <hi@santifer.io> (https://santifer.io)",
-  "homepage": "https://santifer.io",
+  "keywords": ["ai", "job-search", "claude-code", "career", "automation", "it-support", "cybersecurity"],
+  "author": "Sterling Fisher <SterlingSFisher@gmail.com> (https://github.com/Sterl1337)",
+  "homepage": "https://github.com/Sterl1337/job-hunt-ai",
   "repository": {
     "type": "git",
-    "url": "https://github.com/santifer/career-ops"
+    "url": "https://github.com/Sterl1337/job-hunt-ai"
   },
   "license": "MIT",
   "dependencies": {

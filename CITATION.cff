@@ -1,13 +1,12 @@
 cff-version: 1.2.0
-message: "If you use career-ops, please cite it using these metadata."
-title: "Career-Ops: AI-Powered Job Search Pipeline"
+message: "If you use job-hunt-ai, please cite it using these metadata."
+title: "job-hunt-ai: AI-Powered Job Search Pipeline"
 type: software
 authors:
-  - family-names: "Fernández de Valderrama"
-    given-names: "Santiago"
-    website: "https://santifer.io"
-url: "https://santifer.io"
-repository-code: "https://github.com/santifer/career-ops"
+  - family-names: "Fisher"
+    given-names: "Sterling"
+url: "https://github.com/Sterl1337/job-hunt-ai"
+repository-code: "https://github.com/Sterl1337/job-hunt-ai"
 license: MIT
 keywords:
   - ai
@@ -15,5 +14,6 @@ keywords:
   - claude-code
   - career
   - automation
-  - llmops
   - go-tui
+  - it-support
+  - cybersecurity

@@ -11,9 +11,9 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/santifer/career-ops/dashboard/internal/data"
-	"github.com/santifer/career-ops/dashboard/internal/theme"
-	"github.com/santifer/career-ops/dashboard/internal/ui/screens"
+	"github.com/Sterl1337/job-hunt-ai/dashboard/internal/data"
+	"github.com/Sterl1337/job-hunt-ai/dashboard/internal/theme"
+	"github.com/Sterl1337/job-hunt-ai/dashboard/internal/ui/screens"
 )
 
 // dataReloadMsg is sent when applications.md changes on disk.
