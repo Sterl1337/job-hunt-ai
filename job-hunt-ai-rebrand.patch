@@ -1,0 +1,233 @@
+*** Begin Patch
+*** Update File: README.md
+@@
+-  Available commands:
+-   /career-ops {JD}      → AUTO-PIPELINE: evaluate + report + PDF + tracker (paste text or URL)
+-   /career-ops pipeline  → Process pending URLs from inbox (data/pipeline.md)
+-   /career-ops oferta    → Evaluation only A-F (no auto PDF)
+-   /career-ops ofertas   → Compare and rank multiple offers
+-   /career-ops contacto  → LinkedIn power move: find contacts + draft message
+-   /career-ops deep      → Deep research prompt about company
+-   /career-ops pdf       → PDF only, ATS-optimized CV
+-   /career-ops training  → Evaluate course/cert against North Star
+-   /career-ops project   → Evaluate portfolio project idea
+-   /career-ops tracker   → Application status overview
+-   /career-ops apply     → Live application assistant (reads form + generates answers)
+-   /career-ops scan       → Scan portals and discover new offers
+-   /career-ops batch      → Batch processing with parallel workers
+-   /career-ops mass-apply → Mass apply across LinkedIn, ZipRecruiter, Glassdoor, Indeed
++  Available commands:
++   /job-hunt-ai {JD}      → AUTO‑PIPELINE: evaluate + report + PDF + tracker (paste text or URL)
++   /job-hunt-ai pipeline  → Process pending URLs from inbox (data/pipeline.md)
++   /job-hunt-ai oferta    → Evaluation only A‑F (no auto PDF)
++   /job-hunt-ai ofertas   → Compare and rank multiple offers
++   /job-hunt-ai contacto  → LinkedIn power move: find contacts + draft message
++   /job-hunt-ai deep      → Deep research prompt about company
++   /job-hunt-ai pdf       → PDF only, ATS‑optimized CV
++   /job-hunt-ai training  → Evaluate course/cert against North Star
++   /job-hunt-ai project   → Evaluate portfolio project idea
++   /job-hunt-ai tracker   → Application status overview
++   /job-hunt-ai apply     → Live application assistant (reads form + generates answers)
++   /job-hunt-ai scan       → Scan portals and discover new offers
++   /job-hunt-ai batch      → Batch processing with parallel workers
++   /job-hunt-ai mass-apply → Mass apply across LinkedIn, ZipRecruiter, Glassdoor, Indeed
+*** End Patch
+*** Begin Patch
+*** Update File: .claude/skills/career-ops/SKILL.md
+@@
+-name: career-ops
++name: job-hunt-ai
+@@
+-# career-ops -- Router
++# job-hunt-ai -- Router
+@@
+-```
+-career-ops -- Command Center
+-
+-Available commands:
+-  /career-ops {JD}      → AUTO-PIPELINE: evaluate + report + PDF + tracker (paste text or URL)
+-  /career-ops pipeline  → Process pending URLs from inbox (data/pipeline.md)
+-  /career-ops oferta    → Evaluation only A-F (no auto PDF)
+-  /career-ops ofertas   → Compare and rank multiple offers
+-  /career-ops contacto  → LinkedIn power move: find contacts + draft message
+-  /career-ops deep      → Deep research prompt about company
+-  /career-ops pdf       → PDF only, ATS-optimized CV
+-  /career-ops training  → Evaluate course/cert against North Star
+-  /career-ops project   → Evaluate portfolio project idea
+-  /career-ops tracker   → Application status overview
+-  /career-ops apply     → Live application assistant (reads form + generates answers)
+-  /career-ops scan       → Scan portals and discover new offers
+-  /career-ops batch      → Batch processing with parallel workers
+-  /career-ops mass-apply → Mass apply across LinkedIn, ZipRecruiter, Glassdoor, Indeed
+-
+-Inbox: add URLs to data/pipeline.md → /career-ops pipeline
+-Or paste a JD directly to run the full pipeline.
+-```
++```
++job-hunt-ai -- Command Center
++
++Available commands:
++  /job-hunt-ai {JD}      → AUTO‑PIPELINE: evaluate + report + PDF + tracker (paste text or URL)
++  /job-hunt-ai pipeline  → Process pending URLs from inbox (data/pipeline.md)
++  /job-hunt-ai oferta    → Evaluation only A‑F (no auto PDF)
++  /job-hunt-ai ofertas   → Compare and rank multiple offers
++  /job-hunt-ai contacto  → LinkedIn power move: find contacts + draft message
++  /job-hunt-ai deep      → Deep research prompt about company
++  /job-hunt-ai pdf       → PDF only, ATS‑optimized CV
++  /job-hunt-ai training  → Evaluate course/cert against North Star
++  /job-hunt-ai project   → Evaluate portfolio project idea
++  /job-hunt-ai tracker   → Application status overview
++  /job-hunt-ai apply     → Live application assistant (reads form + generates answers)
++  /job-hunt-ai scan       → Scan portals and discover new offers
++  /job-hunt-ai batch      → Batch processing with parallel workers
++  /job-hunt-ai mass-apply → Mass apply across LinkedIn, ZipRecruiter, Glassdoor, Indeed
++
++Inbox: add URLs to data/pipeline.md → /job-hunt-ai pipeline
++Or paste a JD directly to run the full pipeline.
++```
+@@
+-  description="career-ops {mode}"
++  description="job-hunt-ai {mode}"
+*** End Patch
+*** Begin Patch
+*** Update File: CLAUDE.md
+@@ ## Main commands
+- - `/career-ops {job URL or JD}` — run the main evaluation pipeline
+- - `/career-ops scan` — scan configured portals
+- - `/career-ops pdf` — generate resume output
+- - `/career-ops tracker` — review application status
+- - `/career-ops batch` — process multiple opportunities
+- - `/career-ops pipeline` — process pending URLs
+- - `/career-ops apply` — prepare application data without auto-submitting
++ - `/job-hunt-ai {job URL or JD}` — run the main evaluation pipeline
++ - `/job-hunt-ai scan` — scan configured portals
++ - `/job-hunt-ai pdf` — generate resume output
++ - `/job-hunt-ai tracker` — review application status
++ - `/job-hunt-ai batch` — process multiple opportunities
++ - `/job-hunt-ai pipeline` — process pending URLs
++ - `/job-hunt-ai apply` — prepare application data without auto-submitting
+*** End Patch
+*** Begin Patch
+*** Update File: docs/SETUP.md
+@@
+-Then paste a job offer URL or description. Career-ops will automatically evaluate it, generate a report, create a tailored PDF, and track it.
++Then paste a job offer URL or description. **job-hunt-ai** will automatically evaluate it, generate a report, create a tailored PDF, and track it.
+@@
+-| Search for offers | `/career-ops scan` |
+-| Process pending URLs | `/career-ops pipeline` |
+-| Generate a PDF | `/career-ops pdf` |
+-| Batch evaluate | `/career-ops batch` |
+-| Check tracker status | `/career-ops tracker` |
+-| Fill application form | `/career-ops apply` |
++| Search for offers | `/job-hunt-ai scan` |
++| Process pending URLs | `/job-hunt-ai pipeline` |
++| Generate a PDF | `/job-hunt-ai pdf` |
++| Batch evaluate | `/job-hunt-ai batch` |
++| Check tracker status | `/job-hunt-ai tracker` |
++| Fill application form | `/job-hunt-ai apply` |
+@@
+- go build -o career-dashboard .
+- ./career-dashboard            # Opens TUI pipeline viewer
++ go build -o job-hunt-dashboard .
++ ./job-hunt-dashboard          # Opens TUI pipeline viewer
+*** End Patch
+*** Begin Patch
+*** Update File: modes/_shared.md
+@@
+-# System Context -- career-ops
++# System Context -- job-hunt-ai
+@@
+-     that improve with each career-ops release.
++     that improve with each job-hunt-ai release.
+*** End Patch
+*** Begin Patch
+*** Update File: generate-pdf.mjs
+@@
+- * Usage:
+- *   node career-ops/generate-pdf.mjs <input.html> <output.pdf> [--format=letter|a4]
++ * Usage:
++ *   node job-hunt-ai/generate-pdf.mjs <input.html> <output.pdf> [--format=letter|a4]
+@@
+-   // Resolve font paths relative to career-ops/fonts/
++   // Resolve font paths relative to job-hunt-ai/fonts/
+*** End Patch
+*** Begin Patch
+*** Update File: cv-sync-check.mjs
+@@
+- * cv-sync-check.mjs — Validates that the career-ops setup is consistent.
++ * cv-sync-check.mjs — Validates that the job-hunt-ai setup is consistent.
+@@
+-console.log('\n=== career-ops sync check ===\n');
++console.log('\n=== job-hunt-ai sync check ===\n');
+*** End Patch
+*** Begin Patch
+*** Update File: batch/batch-runner.sh
+@@
+-# career-ops batch runner — standalone orchestrator for claude -p workers
++# job-hunt-ai batch runner — standalone orchestrator for claude -p workers
+@@ usage() {
+-  cat <<'USAGE'
+-career-ops batch runner — process job offers in batch via claude -p workers
++  cat <<'USAGE'
++job-hunt-ai batch runner — process job offers in batch via claude -p workers
+@@ usage() {
+-Examples:
++Examples:
+@@
+-   ./batch-runner.sh --dry-run
++   ./batch-runner.sh --dry-run
+@@
+-   ./batch-runner.sh --parallel 2 --start-from 10
++   ./batch-runner.sh --parallel 2 --start-from 10
+ USAGE
+@@ merge_tracker() {
+-  echo "=== Merging tracker additions ==="
+-  node "$PROJECT_DIR/career-ops/merge-tracker.mjs"
+-  echo ""
+-  echo "=== Verifying pipeline integrity ==="
+-  node "$PROJECT_DIR/career-ops/verify-pipeline.mjs" || echo "⚠️  Verification found issues (see above)"
++  echo "=== Merging tracker additions ==="
++  node "$PROJECT_DIR/merge-tracker.mjs"
++  echo ""
++  echo "=== Verifying pipeline integrity ==="
++  node "$PROJECT_DIR/verify-pipeline.mjs" || echo "⚠️  Verification found issues (see above)"
+*** End Patch
+*** Begin Patch
+*** Update File: batch/batch-runner.sh
+@@
+-  echo "=== career-ops batch runner ==="
++  echo "=== job-hunt-ai batch runner ==="
+*** End Patch
+*** Begin Patch
+*** Update File: verify-pipeline.mjs
+@@
+- * verify-pipeline.mjs — Health check for career-ops pipeline integrity
++ * verify-pipeline.mjs — Health check for job-hunt-ai pipeline integrity
+@@
+- * Run: node career-ops/verify-pipeline.mjs
++ * Run: node job-hunt-ai/verify-pipeline.mjs
+*** End Patch
+*** Begin Patch
+*** Update File: dedup-tracker.mjs
+@@
+- * Run: node career-ops/dedup-tracker.mjs [--dry-run]
++ * Run: node job-hunt-ai/dedup-tracker.mjs [--dry-run]
+*** End Patch
+*** Begin Patch
+*** Update File: merge-tracker.mjs
+@@
+- * Run: node career-ops/merge-tracker.mjs [--dry-run] [--verify]
++ * Run: node job-hunt-ai/merge-tracker.mjs [--dry-run] [--verify]
+*** End Patch
+*** Begin Patch
+*** Update File: normalize-statuses.mjs
+@@
+- * Run: node career-ops/normalize-statuses.mjs [--dry-run]
++ * Run: node job-hunt-ai/normalize-statuses.mjs [--dry-run]
+*** End Patch
+*** Begin Patch
+*** Update File: update-system.mjs
+@@
+- * update-system.mjs — Safe auto-updater for career-ops
++ * update-system.mjs — Safe auto-updater for job-hunt-ai
+*** End Patch
