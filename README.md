@@ -48,41 +48,71 @@ Key behavior:
 Primary command:
 
 ```bash
-/career-ops mass-apply
+/job-hunt-ai mass-apply
 ```
 
-The router and skill manifest now recognize the mass-apply command, and the repo includes platform mode files for LinkedIn, ZipRecruiter, and Glassdoor.
+The router and skill manifest recognize the mass-apply command, and the repo includes platform mode files for LinkedIn, ZipRecruiter, and Glassdoor.
 
 ---
 
 ## Core commands
 
 ```bash
-/career-ops {JD}        # auto-pipeline from pasted JD or JD URL
-/career-ops pipeline    # process pending URLs from inbox
-/career-ops oferta      # evaluation only
-/career-ops ofertas     # compare multiple roles
-/career-ops contacto    # contact and outreach support
-/career-ops deep        # deep company research prompt
-/career-ops pdf         # generate ATS resume PDF
-/career-ops tracker     # view application status
-/career-ops apply       # live application assistant
-/career-ops scan        # scan portals for roles
-/career-ops batch       # batch processing
-/career-ops mass-apply  # multi-platform mass application campaign
+/job-hunt-ai {JD}        # auto-pipeline from pasted JD or JD URL
+/job-hunt-ai pipeline    # process pending URLs from inbox
+/job-hunt-ai oferta      # evaluation only
+/job-hunt-ai ofertas     # compare multiple roles
+/job-hunt-ai contacto    # contact and outreach support
+/job-hunt-ai deep        # deep company research prompt
+/job-hunt-ai pdf         # generate ATS resume PDF
+/job-hunt-ai tracker     # view application status
+/job-hunt-ai apply       # live application assistant
+/job-hunt-ai scan        # scan portals for roles
+/job-hunt-ai batch       # batch processing
+/job-hunt-ai mass-apply  # multi-platform mass application campaign
 ```
+
+---
+
+## Mass apply quick start
+
+```bash
+npm install
+npx playwright install chromium
+claude --chrome --dangerously-skip-permissions
+```
+
+Then, inside the Claude-controlled Chrome session:
+
+1. Install the Claude browser extension if you have not already.
+2. Log into each supported board you want to use for the campaign:
+   - LinkedIn
+   - ZipRecruiter
+   - Glassdoor
+   - Indeed
+3. Confirm your resumes, profile answers, and saved defaults are current.
+4. Run:
+
+```bash
+/job-hunt-ai mass-apply
+```
+
+Recommended run pattern:
+- start in pause-before-submit mode
+- verify filters, resume selection, and question handling
+- only enable faster or more automated submission behavior after validation
 
 ---
 
 ## Files added or updated for mass apply
 
-- `.claude/skills/career-ops/SKILL.md`
+- `.claude/skills/career-ops/SKILL.md` (skill router branded to invoke `/job-hunt-ai`)
 - `CLAUDE.md`
 - `modes/mass-apply.md`
 - `modes/linkedin-apply.md`
 - `modes/ziprecruiter-apply.md`
 - `modes/glassdoor-apply.md`
-- supporting docs and batch workflow files from the uploaded update set
+- supporting docs and batch workflow files from the update set
 
 ---
 
@@ -96,7 +126,7 @@ npm run doctor
 Then run the command you need, such as:
 
 ```bash
-/career-ops mass-apply
+/job-hunt-ai mass-apply
 ```
 
 ---
