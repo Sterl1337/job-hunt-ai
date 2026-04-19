@@ -27,6 +27,7 @@ Determine the mode from `{{mode}}`:
 | `apply` | `apply` |
 | `scan` | `scan` |
 | `batch` | `batch` |
+| `mass-apply` | `mass-apply` |
 
 **Auto-pipeline detection:** If `{{mode}}` is not a known sub-command AND contains JD text (keywords: "responsibilities", "requirements", "qualifications", "about the role", "we're looking for", company name + role) or a URL to a JD, execute `auto-pipeline`.
 
@@ -53,8 +54,9 @@ Available commands:
   /career-ops project   → Evaluate portfolio project idea
   /career-ops tracker   → Application status overview
   /career-ops apply     → Live application assistant (reads form + generates answers)
-  /career-ops scan      → Scan portals and discover new offers
-  /career-ops batch     → Batch processing with parallel workers
+  /career-ops scan       → Scan portals and discover new offers
+  /career-ops batch      → Batch processing with parallel workers
+  /career-ops mass-apply → Mass apply across LinkedIn, ZipRecruiter, Glassdoor, Indeed
 
 Inbox: add URLs to data/pipeline.md → /career-ops pipeline
 Or paste a JD directly to run the full pipeline.
@@ -69,7 +71,7 @@ After determining the mode, load the necessary files before executing:
 ### Modes that require `_shared.md` + their mode file:
 Read `modes/_shared.md` + `modes/{mode}.md`
 
-Applies to: `auto-pipeline`, `oferta`, `ofertas`, `pdf`, `contacto`, `apply`, `pipeline`, `scan`, `batch`
+Applies to: `auto-pipeline`, `oferta`, `ofertas`, `pdf`, `contacto`, `apply`, `pipeline`, `scan`, `batch`, `mass-apply`
 
 ### Standalone modes (only their mode file):
 Read `modes/{mode}.md`
@@ -77,7 +79,9 @@ Read `modes/{mode}.md`
 Applies to: `tracker`, `deep`, `training`, `project`
 
 ### Modes delegated to subagent:
-For `scan`, `apply` (with Playwright), and `pipeline` (3+ URLs): launch as Agent with the content of `_shared.md` + `modes/{mode}.md` injected into the subagent prompt.
+For `scan`, `apply` (with Playwright), `pipeline` (3+ URLs), and `mass-apply`: launch as Agent with the content of `_shared.md` + `modes/{mode}.md` injected into the subagent prompt.
+
+**For `mass-apply`:** Also inject the platform-specific mode files as needed (`modes/linkedin-apply.md`, `modes/ziprecruiter-apply.md`, `modes/glassdoor-apply.md`). The mass-apply conductor is long-running and should run with `--chrome` and `--dangerously-skip-permissions`.
 
 ```
 Agent(
