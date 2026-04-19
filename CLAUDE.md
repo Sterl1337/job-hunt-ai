@@ -12,13 +12,14 @@ job-hunt-ai is a terminal-first job-search workflow built around role evaluation
 
 ## Main commands
 
-- `/career-ops {job URL or JD}` — run the main evaluation pipeline
-- `/career-ops scan` — scan configured portals
-- `/career-ops pdf` — generate resume output
-- `/career-ops tracker` — review application status
-- `/career-ops batch` — process multiple opportunities
-- `/career-ops pipeline` — process pending URLs
-- `/career-ops apply` — prepare application data without auto-submitting
+- `/job-hunt-ai {job URL or JD}` — run the main evaluation pipeline
+- `/job-hunt-ai scan` — scan configured portals
+- `/job-hunt-ai pdf` — generate resume output
+- `/job-hunt-ai tracker` — review application status
+- `/job-hunt-ai batch` — process multiple opportunities
+- `/job-hunt-ai pipeline` — process pending URLs
+- `/job-hunt-ai apply` — prepare application data without auto-submitting
+- `/job-hunt-ai mass-apply` — multi-platform mass-apply workflow
 
 ## Working rules
 
