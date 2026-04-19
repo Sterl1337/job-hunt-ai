@@ -1,107 +1,113 @@
 # job-hunt-ai
 
-> AI-assisted job search workflow for evaluating roles, tailoring resumes, scanning portals, and tracking applications from the terminal.
+> AI-powered job search pipeline built on Claude Code. Evaluate offers, generate tailored resumes, scan portals, run application workflows, and track everything from your terminal.
 
-![Claude Code](https://img.shields.io/badge/Claude_Code-000?style=flat&logo=anthropic&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat&logo=node.js&logoColor=white)
-![Go](https://img.shields.io/badge/Go-00ADD8?style=flat&logo=go&logoColor=white)
-![Playwright](https://img.shields.io/badge/Playwright-2EAD33?style=flat&logo=playwright&logoColor=white)
-![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
+[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](./VERSION)
+[![Claude Code](https://img.shields.io/badge/Claude-Code-7C3AED.svg)](https://claude.ai/code)
+[![Node](https://img.shields.io/badge/node-%3E%3D20-green.svg)](https://nodejs.org/)
+[![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](./LICENSE)
 
-## Overview
+---
 
-job-hunt-ai is a practical job-search automation workflow built around role evaluation, application tracking, resume customization, and terminal-first execution.
+## Overview & Attribution
 
-This repository is maintained by **Sterling Fisher** and represents his adapted version of the original open-source project **[career-ops](https://github.com/santifer/career-ops)** by **santifer**. This version includes Sterling's customizations, workflow changes, branding, and ongoing improvements, but it is not presented as the original upstream project.
+job-hunt-ai is maintained by **Sterling Fisher** as a customized adaptation of the original open-source project **[career-ops](https://github.com/santifer/career-ops)** by **santifer**.
+
+This repository reflects Sterling’s branding, workflow changes, documentation updates, and automation experiments, but it is **not** presented as the original upstream project. Preserve credit to the upstream source when describing the repo’s origin.
+
+---
 
 ## What it does
 
-- Evaluates opportunities with a structured scoring workflow
-- Generates tailored resume outputs from a source CV
-- Scans job portals and company career pages
-- Tracks applications and reports in one place
-- Supports batch processing and terminal-first workflows
-- Provides a dashboard for pipeline visibility and review
+- Evaluates job descriptions and scores fit
+- Generates ATS-friendly resumes and PDFs
+- Tracks applications and pipeline state
+- Scans job portals for matching roles
+- Supports live apply assistance
+- Adds **mass-apply orchestration** across multiple platforms
 
-## Why this project matters
+---
 
-This repository highlights practical work in:
+## New in v1.2.0: Mass Apply
 
-- automation
-- terminal tooling
-- documentation
-- workflow design
-- job-search operations
-- AI-assisted productivity systems
+Mass apply adds a conductor-style workflow for higher-volume campaigns across:
+
+- LinkedIn Easy Apply
+- ZipRecruiter 1-Click / Quick Apply
+- Glassdoor Easy Apply
+- Indeed Easily Apply
+
+Key behavior:
+
+- platform-specific apply modes
+- deduping against tracker/logs before applying
+- pause-before-submit by default
+- optional turbo / auto-submit behavior when explicitly enabled by the user
+- session summaries and tracker integration after each run
+
+Primary command:
+
+```bash
+/career-ops mass-apply
+```
+
+The router and skill manifest now recognize the mass-apply command, and the repo includes platform mode files for LinkedIn, ZipRecruiter, and Glassdoor.
+
+---
+
+## Core commands
+
+```bash
+/career-ops {JD}        # auto-pipeline from pasted JD or JD URL
+/career-ops pipeline    # process pending URLs from inbox
+/career-ops oferta      # evaluation only
+/career-ops ofertas     # compare multiple roles
+/career-ops contacto    # contact and outreach support
+/career-ops deep        # deep company research prompt
+/career-ops pdf         # generate ATS resume PDF
+/career-ops tracker     # view application status
+/career-ops apply       # live application assistant
+/career-ops scan        # scan portals for roles
+/career-ops batch       # batch processing
+/career-ops mass-apply  # multi-platform mass application campaign
+```
+
+---
+
+## Files added or updated for mass apply
+
+- `.claude/skills/career-ops/SKILL.md`
+- `CLAUDE.md`
+- `modes/mass-apply.md`
+- `modes/linkedin-apply.md`
+- `modes/ziprecruiter-apply.md`
+- `modes/glassdoor-apply.md`
+- supporting docs and batch workflow files from the uploaded update set
+
+---
 
 ## Quick start
 
 ```bash
-# Clone and install
-git clone https://github.com/Sterl1337/job-hunt-ai.git
-cd job-hunt-ai
 npm install
-npx playwright install chromium
-
-# Configure
-cp config/profile.example.yml config/profile.yml
-cp templates/portals.example.yml portals.yml
-
-# Add your CV source file
-# Create cv.md in the project root
-
-# Launch Claude Code
-claude
+npm run doctor
 ```
 
-See `docs/SETUP.md` for full setup details.
-
-## Usage
+Then run the command you need, such as:
 
 ```bash
-/career-ops                # Show commands
-/career-ops scan           # Scan portals
-/career-ops pdf            # Generate tailored resume output
-/career-ops tracker        # View application status
-/career-ops batch          # Batch process opportunities
-/career-ops pipeline       # Process pending URLs
+/career-ops mass-apply
 ```
 
-You can also paste a job URL directly into the workflow and let the pipeline evaluate it.
+---
 
-## Project structure
-
-```text
-job-hunt-ai/
-├── CLAUDE.md
-├── config/
-├── templates/
-├── modes/
-├── batch/
-├── dashboard/
-├── docs/
-├── data/
-├── reports/
-└── output/
-```
-
-## Tech stack
-
-- Claude Code
-- Node.js
-- Playwright
-- Go (dashboard)
-- Markdown / YAML / TSV workflow files
-
-## Attribution
+## Credits & Attribution
 
 - **Original upstream project:** [santifer/career-ops](https://github.com/santifer/career-ops)
 - **Maintained adaptation in this repo:** [Sterl1337/job-hunt-ai](https://github.com/Sterl1337/job-hunt-ai)
 - **Current maintainer and customization work:** Sterling Fisher
 
-## About this version
-
-Sterling Fisher maintains this version as a customized adaptation focused on practical workflow improvements, personal automation, and portfolio-ready documentation.
+This fork includes Sterling’s repo-specific customization work, documentation updates, workflow changes, and additional automation experiments layered on top of the upstream foundation.
 
 ## License
 
